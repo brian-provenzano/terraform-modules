@@ -1,9 +1,5 @@
-# Terraform Infra
+# Custom Terraform Modules 
+Set of TF modules
 
-#### Terraform infrastructure spin-up to AWS
-
-#### Details
-Personal infra spin-up lab for AWS testing.  These tf files will spin up infra in AWS.
-
-TODO - add some ansible provisioning for final setup and maint
-
+## Details
+Personal set of TF modules used in personal labbing (learning the TF) 
