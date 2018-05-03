@@ -30,9 +30,9 @@ variable "keyname" {
   description = "The name of the ssh access key for the instance in this region"
 }
 
-variable "keyfile" {
-  description = "The key for ssh access for the instance in this region"
-}
+# variable "keyfile" {
+#   description = "The key for ssh access for the instance in this region"
+# }
 
 variable "instancetype" {
   description = "The type of instance t2.micro, etc"
