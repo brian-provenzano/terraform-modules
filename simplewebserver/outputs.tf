@@ -2,9 +2,9 @@
 # MODULE OUTPUTS
 #--------------------------------------------------------------------------------
 output "route53_FQDN" {
-  value = "${aws_route53_record.webserver.name}"
+  value = "${aws_route53_record.simplewebserver.name}"
 }
 
 output "publicip" {
-  value = "${aws_route53_record.webserver.ip}"
+  value = "${aws_instance.simplewebserver.public_ip}"
 }
