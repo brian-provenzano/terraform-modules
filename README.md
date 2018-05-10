@@ -1,5 +1,5 @@
 # Custom Terraform Modules 
-Set of TF modules
+Set of TF modules I have developed as I learn Terraform.  These are in constant flux, so stability is not guaranteed.
 
 ## Details
-Personal set of TF modules used in personal labbing (learning the TF) 
+TODO - detail the modules; usage etc. 
