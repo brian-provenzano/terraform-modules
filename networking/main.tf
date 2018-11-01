@@ -39,18 +39,9 @@ resource "aws_route_table_association" "associate_pub" {
   route_table_id = "${aws_route_table.public.id}"
 }
 
-# Associate public subnets with public route table
-# resource "aws_route_table_association" "associate_pub1" {
-#   subnet_id = "${aws_subnet.main_publicsubnet_one.id}"
-#   route_table_id = "${aws_route_table.public.id}"
-# }
-# resource "aws_route_table_association" "associate_pub2" {
-#   subnet_id = "${aws_subnet.main_publicsubnet_two.id}"
-#   route_table_id = "${aws_route_table.public.id}"
-# }
-
 # Create a "PRIVATE" route table.
 resource "aws_route_table" "private" {
+    count = "${length(var.privatesubnet_cidrs) > 0 ? 1 : 0}"
   vpc_id = "${aws_vpc.main.id}"
   tags   = "${merge(var.tags, map("Name", format("%s", "${var.environment}-${var.vpc_name}-private-route")))}"
 }
@@ -91,35 +82,6 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 }
 
-# # Create public subnet one
-# resource "aws_subnet" "main_publicsubnet_one" {
-#   vpc_id = "${aws_vpc.main.id}"
-#   cidr_block = "${var.publicsubnet_one_cidr}"
-#   map_public_ip_on_launch = true
-#   availability_zone = "${var.publicsubnet_one_az}"
-#   tags {
-#     Name = "${var.environment}-${var.vpc_name}-publicsubnet-one"
-#     Terraform = "true"
-#     Role = "networking"
-#     Department = "development"
-#     Environment = "${var.environment}"
-#   }
-# }
-# # Create public subnet two
-# resource "aws_subnet" "main_publicsubnet_two" {
-#   vpc_id = "${aws_vpc.main.id}"
-#   cidr_block = "${var.publicsubnet_two_cidr}"
-#   map_public_ip_on_launch = true
-#   availability_zone = "${var.publicsubnet_two_az}"
-#   tags {
-#     Name = "${var.environment}-${var.vpc_name}-publicsubnet-two"
-#     Terraform = "true"
-#     Role = "networking"
-#     Department = "development"
-#     Environment = "${var.environment}"
-#   }
-# }
-
 # --------------
 # PRIVATE SUBNETS (NOT DATABASE) 
 # --------------
@@ -132,35 +94,6 @@ resource "aws_subnet" "private" {
   tags                    = "${merge(var.tags, map("Name", format("%s-privatesubnet-%s", "${var.environment}-${var.vpc_name}", element(var.availability_zones, count.index))))}"
   map_public_ip_on_launch = false
 }
-
-# Create private subnet one
-# resource "aws_subnet" "main_privatesubnet_one" {
-#   vpc_id = "${aws_vpc.main.id}"
-#   cidr_block = "${var.privatesubnet_one_cidr}"
-#   map_public_ip_on_launch = false
-#   availability_zone = "${var.privatesubnet_one_az}"
-#   tags {
-#     Name = "${var.environment}-${var.vpc_name}-privatesubnet-one"
-#     Terraform = "true"
-#     Role = "networking"
-#     Department = "development"
-#     Environment = "${var.environment}"
-#   }
-# }
-# # Create private subnet two
-# resource "aws_subnet" "main_privatesubnet_two" {
-#   vpc_id = "${aws_vpc.main.id}"
-#   cidr_block = "${var.privatesubnet_two_cidr}"
-#   map_public_ip_on_launch = false
-#   availability_zone = "${var.privatesubnet_two_az}"
-#   tags {
-#     Name = "${var.environment}-${var.vpc_name}-privatesubnet-two"
-#     Terraform = "true"
-#     Role = "networking"
-#     Department = "development"
-#     Environment = "${var.environment}"
-#   }
-# }
 
 # --------------
 # DATABASE PRIVATE SUBNETS AND GROUPS 
@@ -183,19 +116,3 @@ resource "aws_db_subnet_group" "database_group" {
   subnet_ids = ["${aws_subnet.private_database.*.id}"]
   tags       = "${merge(var.tags, map("Name", format("%s-db-subnetgroup", "${var.environment}-${var.vpc_name}")))}"
 }
-
-#RDS DB subnet groups
-# resource "aws_db_subnet_group" "main_dbsubnetgroup_one" {
-#   name = "main-dbsubnetgroup-one"
-#   #TODO - create another set of private subnets for db network (don't reuse web subnet)
-#   subnet_ids = ["${aws_subnet.main_privatesubnet_one.id}","${aws_subnet.main_privatesubnet_two.id}"]
-#   tags {
-#     Name = "${var.environment}-${var.vpc_name}-dbsubnetgroup-one"
-#     Terraform = "true"
-#     Role = "networking"
-#     Department = "development"
-#     Environment = "${var.environment}"
-#     Database = "true"
-#   }
-# }
-
